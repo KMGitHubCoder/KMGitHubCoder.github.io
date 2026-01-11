@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Git & GitHub CLI Cheat Sheet</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      margin: 0;
+      padding: 2rem;
+      line-height: 1.6;
+    }
+
+    h1, h2, h3 {
+      color: #38bdf8;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    section {
+      background: #020617;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 0 0 1px #1e293b;
+    }
+
+    pre {
+      background: #020617;
+      color: #e5e7eb;
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      border: 1px solid #1e293b;
+    }
+
+    code {
+      color: #a5f3fc;
+      font-family: "JetBrains Mono", monospace;
+    }
+
+    .tip {
+      background: #020617;
+      border-left: 4px solid #22d3ee;
+      padding: 1rem;
+      border-radius: 8px;
+      color: #cffafe;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 2rem;
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🧰 Git & GitHub CLI Cheat Sheet</h1>
+
+  <section>
+    <h2>🔐 GitHub CLI Authentication</h2>
+    <pre><code>
+gh auth login
+gh auth status
+gh auth logout
+    </code></pre>
+  </section>
+
+  <section>
+    <h2>📦 Repository Management (gh)</h2>
+    <pre><code>
+gh repo list
+gh repo create test-repo --private --confirm
+gh repo create test-repo --public --source=. --remote=origin
+gh repo clone username/test-repo
+gh repo view --web
+gh repo delete username/test-repo --confirm
+    </code></pre>
+  </section>
+
+  <section>
+    <h2>🐛 Issues</h2>
+    <pre><code>
+gh issue create --title "Title" --body "Body"
+gh issue list
+gh issue view 1
+gh issue close 1
+    </code></pre>
+  </section>
+
+  <section>
+    <h2>🧑‍💻 Project Initialization</h2>
+    <pre><code>
+git init
+echo "# Test Repository" > README.md
+git status
+    </code></pre>
+  </section>
+
+  <section>
+    <h2>➕ Staging & Committing</h2>
+    <pre><code>
+git add README.md
+git add .
+git commit -m "Initial commit"
+    </code></pre>
+  </section>
+
+  <section>
+    <h2>🌐 Remote Management</h2>
+    <pre><code>
+git remote -v
+git remote add origin https://github.com/username/repo.git
+git remote remove origin
+    </code></pre>
+  </section>
+
+  <section>
+    <h2>🚀 Push & Pull</h2>
+    <pre><code>
+git push -u origin main
+git pull
+git fetch
+    </code></pre>
+  </section>
+
+  <section>
+    <h2>🌿 Branching</h2>
+    <pre><code>
+git branch
+git branch new-feature
+git checkout new-feature
+git checkout main
+git branch -d new-feature
+
+# Modern commands
+git switch main
+git switch -c new-feature
+    </code></pre>
+  </section>
+
+  <section>
+    <h2>🔄 Undo & Fix</h2>
+    <pre><code>
+git restore README.md
+git restore --staged README.md
+git commit --amend
+git reset --soft HEAD~1
+git reset --hard HEAD~1
+    </code></pre>
+  </section>
+
+  <section>
+    <h2>📜 Logs & Diff</h2>
+    <pre><code>
+git log
+git log --oneline --graph --all
+git diff
+    </code></pre>
+  </section>
+
+  <section>
+    <h2>🧠 Pull Requests & Actions (gh)</h2>
+    <pre><code>
+gh pr create
+gh pr list
+gh pr checkout 1
+gh pr view --web
+gh workflow list
+gh run list
+    </code></pre>
+  </section>
+
+  <section>
+    <h2>🐧 WSL Tip</h2>
+    <div class="tip">
+      <code>cd \\wsl$\Ubuntu\home&lt;your-username&gt;</code><br />
+      Access WSL filesystem from PowerShell or Windows Explorer.
+    </div>
+  </section>
+
+  <section>
+    <h2>⚙️ Global Git Configuration</h2>
+    <pre><code>
+git config --global user.name "Your Name"
+git config --global user.email "you@email.com"
+git config --global init.defaultBranch main
+    </code></pre>
+  </section>
+
+  <footer>
+    Git & GitHub CLI Cheat Sheet • Clean • Offline • Printable
+  </footer>
+
+</body>
+</html>
