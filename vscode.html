@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VS Code Jupyter Map & GitHub Summary</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1.6;
+            margin: 40px;
+            max-width: 900px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 0.95em;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+        ul {
+            margin-left: 20px;
+        }
+        .note {
+            background: #eef6ff;
+            border-left: 4px solid #3498db;
+            padding: 10px 15px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Using Maps in Jupyter (VS Code) and GitHub</h1>
+
+<h2>Why the map did not show in VS Code</h2>
+<ul>
+    <li>Interactive maps (Folium / Plotly) rely on JavaScript.</li>
+    <li>VS Code blocks JavaScript in <strong>untrusted notebooks</strong>.</li>
+    <li>If you see <code>Trust Notebook</code>, the map will not render.</li>
+</ul>
+
+<div class="note">
+    <strong>Fix:</strong> Click <em>Trust Notebook</em>, restart VS Code, restart the kernel, and re-run the cells.
+</div>
+
+<h2>Saving the map as HTML</h2>
+
+<p>When you run:</p>
+<pre><code>m.save("map.html")</code></pre>
+
+<p>The file is saved in the <strong>current working directory</strong> of the Jupyter kernel.</p>
+
+<p>To check the exact location:</p>
+<pre><code>import os
+os.getcwd()</code></pre>
+
+<h3>Typical location</h3>
+<pre><code>project/
+├── notebook.ipynb
+└── map.html</code></pre>
+
+<h2>Opening the map</h2>
+<ul>
+    <li>Right-click <code>map.html</code> in VS Code → <strong>Open with Default Browser</strong></li>
+    <li>Or open it directly from your file system</li>
+</ul>
+
+<h2>GitHub connection explained</h2>
+
+<ul>
+    <li>If your notebook is inside a GitHub repository, <code>map.html</code> is saved locally in that repo.</li>
+    <li>GitHub <strong>does not block file creation</strong>.</li>
+    <li>The file may appear as <strong>untracked</strong> in Source Control.</li>
+</ul>
+
+<h3>Common GitHub-related confusion</h3>
+<ul>
+    <li><code>.gitignore</code> may contain <code>*.html</code></li>
+    <li>The file still exists but is ignored by Git</li>
+</ul>
+
+<h2>Verify the file exists</h2>
+
+<pre><code>import os
+print(os.path.exists("map.html"))
+print(os.listdir())</code></pre>
+
+<p>If this prints <code>True</code>, the file exists regardless of GitHub.</p>
+
+<h2>Best practices</h2>
+<ul>
+    <li>Save outputs to a dedicated folder (e.g. <code>output/map.html</code>)</li>
+    <li>Add generated HTML files to <code>.gitignore</code> if not needed in Git</li>
+    <li>Commit <code>map.html</code> only if you want to share or publish it</li>
+</ul>
+
+<h2>Optional: Publish via GitHub Pages</h2>
+<ul>
+    <li>Commit <code>map.html</code></li>
+    <li>Enable GitHub Pages</li>
+    <li>View your interactive map via a public URL</li>
+</ul>
+
+<h3>Key takeaway</h3>
+<div class="note">
+    Your map code is correct.  
+    The issue was VS Code notebook trust / renderer behavior — not GitHub.
+</div>
+
+</body>
+</html>
