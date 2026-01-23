@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Fixing Jupyter Using ArcGIS Python Instead of WSL Python</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+                   Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      margin: 40px;
+      max-width: 900px;
+      color: #222;
+    }
+
+    h1, h2, h3 {
+      color: #1f2937;
+    }
+
+    h1 {
+      border-bottom: 3px solid #e5e7eb;
+      padding-bottom: 10px;
+    }
+
+    h2 {
+      margin-top: 40px;
+      border-left: 6px solid #3b82f6;
+      padding-left: 12px;
+    }
+
+    code {
+      background: #f3f4f6;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.95em;
+    }
+
+    pre {
+      background: #0f172a;
+      color: #e5e7eb;
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+      color: inherit;
+    }
+
+    .warning {
+      background: #fff7ed;
+      border-left: 6px solid #f97316;
+      padding: 12px 16px;
+      margin: 20px 0;
+    }
+
+    .success {
+      background: #ecfdf5;
+      border-left: 6px solid #10b981;
+      padding: 12px 16px;
+      margin: 20px 0;
+    }
+
+    ul {
+      margin-left: 20px;
+    }
+
+    footer {
+      margin-top: 60px;
+      font-size: 0.9em;
+      color: #6b7280;
+      border-top: 1px solid #e5e7eb;
+      padding-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Fixing Jupyter Using ArcGIS (arcpy) Python Instead of WSL Python</h1>
+
+<h2>Problem Summary</h2>
+<p>
+After installing <strong>ArcGIS (arcpy)</strong> on Windows, Jupyter notebooks
+started using the <strong>ArcGIS / Windows Python</strong> instead of the intended
+<strong>WSL (Ubuntu) Python</strong>, even though Python and packages were installed
+inside WSL.
+</p>
+
+<ul>
+  <li>Packages not found (e.g. <code>folium</code>)</li>
+  <li>Mixed Windows ↔ WSL paths</li>
+  <li>Hard-to-debug environment conflicts</li>
+</ul>
+
+<p><strong>Root cause:</strong> Jupyter was launched from Windows or bound to an ArcGIS Python kernel.</p>
+
+<h2>Goal</h2>
+<ul>
+  <li>✔ Ensure Jupyter uses <strong>pure WSL Python</strong></li>
+  <li>✔ Keep ArcGIS / arcpy <strong>untouched and isolated</strong></li>
+  <li>✔ Create a <strong>clean, repeatable setup</strong></li>
+</ul>
+
+<h2>Step 1 — Identify the Python Used by the Notebook</h2>
+
+<p>Run this cell inside the <em>failing notebook</em>:</p>
+
+<pre><code>import sys
+print(sys.executable)
+print(sys.path)</code></pre>
+
+<div class="warning">
+  <strong>❌ Problem:</strong><br />
+  If you see paths like:
+  <pre><code>C:\Program Files\ArcGIS\Pro\...</code></pre>
+  or
+  <pre><code>/mnt/c/Program Files/ArcGIS</code></pre>
+  Jupyter is using <strong>ArcGIS / Windows Python</strong>.
+</div>
+
+<h2>Step 2 — Identify the Correct Python in WSL</h2>
+
+<p>Run these commands in the <strong>Ubuntu terminal</strong> (not in Jupyter):</p>
+
+<pre><code>which python
+python -c "import sys; print(sys.executable)"
+python -c "import folium; print(folium.__version__)"</code></pre>
+
+<ul>
+  <li>❌ If the last command fails → <code>folium</code> is not installed</li>
+  <li>✅ If it works → this is the Python we want Jupyter to use</li>
+</ul>
+
+<h2>Step 3 — Clean, Isolated Fix (Recommended)</h2>
+
+<p>This method is safe, clean, and cannot affect ArcGIS.</p>
+
+<h3>1️⃣ Remove any broken environment</h3>
+<pre><code>rm -rf ~/wsl-jupyter</code></pre>
+
+<h3>2️⃣ Create a fresh virtual environment</h3>
+<pre><code>python3 -m venv ~/wsl-jupyter
+source ~/wsl-jupyter/bin/activate</code></pre>
+
+<p>Verify:</p>
+<pre><code>which python</code></pre>
+
+<p>Expected output:</p>
+<pre><code>/home/&lt;you&gt;/wsl-jupyter/bin/python</code></pre>
+
+<h3>3️⃣ Install required packages</h3>
+<pre><code>python -m pip install --upgrade pip
+python -m pip install jupyterlab folium ipykernel</code></pre>
+
+<p>Verify:</p>
+<pre><code>python -c "import folium; print(folium.__version__)"</code></pre>
+
+<div class="success">
+  <strong>✅ This must succeed</strong>
+</div>
+
+<h2>Step 4 — Register the Kernel (Critical)</h2>
+
+<pre><code>python -m ipykernel install --user \
+  --name wsl-clean \
+  --display-name "Python (WSL Clean)"</code></pre>
+
+<p>This registers a clean kernel that Jupyter can explicitly select.</p>
+
+<h2>Step 5 — Launch Jupyter Correctly</h2>
+
+<p>From the <strong>same activated WSL terminal</strong>:</p>
+
+<pre><code>jupyter lab</code></pre>
+
+<div class="warning">
+  <strong>Important Rules:</strong>
+  <ul>
+    <li>🚫 Do NOT launch Jupyter from Windows</li>
+    <li>🚫 Do NOT open old notebooks yet</li>
+  </ul>
+</div>
+
+<h2>Step 6 — Create a New Notebook</h2>
+
+<ol>
+  <li>Create a new notebook</li>
+  <li>Select kernel: <strong>Python (WSL Clean)</strong></li>
+  <li>Test:</li>
+</ol>
+
+<pre><code>import sys
+print(sys.executable)</code></pre>
+
+<p>Expected output:</p>
+<pre><code>/home/&lt;you&gt;/wsl-jupyter/bin/python</code></pre>
+
+<h2>Future ToDo / Best Practices</h2>
+
+<ul>
+  <li>Always start Jupyter from WSL</li>
+  <li>Never install Linux packages into ArcGIS Python</li>
+  <li>One virtual environment = one kernel</li>
+  <li>Name kernels clearly (e.g. WSL Clean, WSL GIS)</li>
+  <li>If things break again → delete venv and recreate</li>
+</ul>
+
+<footer>
+  <p>
+    Documented for future reference and repeatable setup.
+  </p>
+</footer>
+
+</body>
+</html>
