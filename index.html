@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Developer Guides Hub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      background: #f8fafc;
+      color: #0f172a;
+    }
+
+    header {
+      padding: 2rem;
+      background: #020617;
+      color: #e5e7eb;
+    }
+
+    header h1 {
+      margin: 0 0 0.5rem 0;
+    }
+
+    header p {
+      max-width: 900px;
+      opacity: 0.9;
+    }
+
+    .tabs {
+      display: flex;
+      background: #020617;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    .tabs button {
+      flex: 1;
+      padding: 1rem;
+      background: none;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .tabs button.active {
+      color: #38bdf8;
+      border-bottom: 3px solid #38bdf8;
+    }
+
+    iframe {
+      width: 100%;
+      height: calc(100vh - 240px);
+      border: none;
+      background: white;
+    }
+
+    .intro {
+      padding: 2rem;
+      max-width: 900px;
+    }
+
+    .intro ul {
+      line-height: 1.7;
+    }
+  </style>
+
+  <script>
+    function openTab(file, btn) {
+      document.getElementById("content").src = file;
+      document.querySelectorAll(".tabs button").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    }
+  </script>
+</head>
+
+<body>
+
+<header>
+  <h1>📚 Developer Guides Hub</h1>
+  <p>
+    A curated set of practical guides covering VS Code, Jupyter, WSL,
+    GitHub workflows, and server security.  
+    Use the tabs below to switch between topics.
+  </p>
+</header>
+
+<section class="intro">
+  <h2>What’s inside?</h2>
+  <ul>
+    <li><strong>VS Code & Jupyter Maps</strong> – Fixing trusted notebook and HTML map rendering issues</li>
+    <li><strong>Git & GitHub CLI</strong> – A clean, offline-friendly command cheat sheet</li>
+    <li><strong>Jupyter + WSL + ArcGIS</strong> – Avoid Python environment conflicts</li>
+    <li><strong>.htaccess Security</strong> – User/password protection with best practices</li>
+  </ul>
+</section>
+
+<nav class="tabs">
+  <button class="active" onclick="openTab('vscode.html', this)">VS Code & Maps</button>
+  <button onclick="openTab('GitHub.html', this)">GitHub CLI</button>
+  <button onclick="openTab('jupyter-wsl-arcgis-fix.html', this)">WSL & ArcGIS</button>
+  <button onclick="openTab('lock_guide.html', this)">.htaccess Lock</button>
+</nav>
+
+<iframe
+  id="content"
+  src="vscode.html"
+  title="Documentation Content">
+</iframe>
+
+</body>
+</html>
